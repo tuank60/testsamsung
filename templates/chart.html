@@ -1,0 +1,84 @@
+{% load static %}
+<header>
+    <title>RSSI chart</title>
+
+</header>
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/util.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+<div class="limiter" style="text-align: center">
+    <!-- <canvas id="temChart" width="700" height="300"></canvas> -->
+    <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+    <div style="width: 25%;float:left">
+        <center><label>{{ dataEnc.dateGet }}</label></center>
+    </div>
+    <!-- <script type="text/javascript" src="{% static 'js/Chart.min.js' %}"></script> -->
+    <script type="text/javascript" src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        // var ctx = document.getElementById("temChart");
+        // var dataPoints = [];
+        // var json = $.getJSON("../../json/temperature.json");
+        // console.log(json);
+        // var json = JSON.parse(data);
+        // alert(json[0].label + " " + json[0].time + "h: " + json[0].tem);
+        // alert(json[1].label + " " + json[1].time + "h: " + json[1].tem);
+    </script>
+    <script>
+    window.onload = function(){
+        var dataPoints = [];
+        var loc = 0;
+        var id = {{device_id}};
+        var chart;
+        // console.log(id)
+        var url = "http://192.168.43.94:8000/json/rssi/" + "?&device_id=" + id + "&loc=" + loc;
+        console.log(url)
+
+        $.getJSON(url, function(data){
+            $.each(data, function(key,value){
+                // console.log(value)
+                dataPoints.push({
+                    x: new Date(value[0], value[1], value[2], value[3], value[4], value[5]),
+                    y: parseInt(value[6])
+                });
+                loc++;
+                // console.log(ataPoints)
+            });
+            chart = new CanvasJS.Chart("chartContainer", {
+                title:{
+                    text: "RSSI of device " + id
+                },
+                data: [{
+                    type: "line",
+                    color: "red",
+                    dataPoints: dataPoints,
+                }],
+            });
+            chart.render();
+            updateChart();
+        });
+        function updateChart(){
+            url = "http://192.168.43.94:8000/json/rssi/" + "?&device_id=" + id + "&loc=" + loc;
+            console.log(url)
+            url_rssi = "http://192.168.43.94:8000/json/avg_rssi/" + id;
+            $.getJSON(url, function(data){
+                $.each(data, function(key, value){
+                    dataPoints.push({
+                        x: new Date(value[0], value[1], value[2], value[3], value[4], value[5]),
+                        y: parseInt(value[6])
+                    });
+                    loc++;
+                    console.log(loc)
+                });
+                chart.render();
+                setTimeout(function(){updateChart();}, 1000);
+            });
+        }
+    }
+    </script>
+</div>
+<div>
+<!--    <label style="color:blue;">Average RSSI: </label>-->
+<!--    <input type="number" value={{avg_rssi}} id="avgRssi">-->
+</div>

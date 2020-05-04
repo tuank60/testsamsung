@@ -1,0 +1,88 @@
+{% load static %}
+<header>
+    <title>Device List</title>
+
+</header>
+<style>
+    .btn{display:inline-block;margin-bottom:0;font-weight:400;text-align:center;white-space:nowrap;vertical-align:middle;-ms-touch-action:manipulation;touch-action:manipulation;cursor:pointer;background-image:none;border:1px solid transparent;padding:6px 12px;font-size:14px;line-height:1.42857143;border-radius:4px;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}
+    .btn-info{color:#fff;background-color:#5bc0de;border-color:#46b8da}
+    .btn-warning{color:#fff;background-color:#f0ad4e;border-color:#eea236}
+    .btn-danger{color:#fff;background-color:#d9534f;border-color:#d43f3a}
+</style>
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css" href="{% static 'css/util.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#chkHeader').click(function() {
+            console.log("ok");
+            var isChecked = $(this).prop("checked");
+            $('#mytable tr:has(td)').find('input[type="checkbox"]').prop('checked', isChecked);
+        });
+        $('#mytable tr:has(td)').find('input[type="checkbox"]').click(function() {
+            var isChecked = $(this).prop("checked");
+            var isHeaderChecked = $("#chkHeader").prop("checked");
+            if (isChecked == false && isHeaderChecked) {
+                $("#chkHeader").prop('checked', isChecked);
+            }
+            else {
+                $('#mytable tr:has(td)').find('input[type="checkbox"]').each(function() {
+                    if ($(this).prop("checked") == false)
+                        isChecked = false;
+                    });
+                $("#chkHeader").prop('checked', isChecked);
+            }
+        });
+    });
+        function Sub(){
+        var Status;
+        if (confirm("Are you sure want to delete this item?")) {
+            Status = '_delete';
+            document.getElementById("sub").name = Status;
+        }
+        else {
+            Status = '_cancel';
+            document.getElementById("sub").name = Status;
+        }
+    }
+</script>
+<body>
+    <form method="POST">
+        {% csrf_token %}
+    <div class="limiter">
+        <div class="container-table100">
+            <div class="wrap-table100" >
+                <div class="table100">
+                    <table id="mytable">
+                        <thead>
+                            <tr class="table100-head">
+                                <th style="width: auto;" align="center"><input type="checkbox" id="chkHeader"></th>
+<!--                                <th style="width: auto;">Device address</th>-->
+                                <th style="width: auto;">Device name</th>
+                                <th style="width: auto;">Device description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for device in list %}
+                            <tr>
+                                <td style="width: auto;"><input type="checkbox" name="{{device.device_id}}"/></td>
+<!--                                <td style="width: auto;"><a href="{% url 'rssiDisplay' device.device_id %}">{{device.device_address}}</a></td>-->
+                                <td style="width: auto;">{{device.device_name}}</td>
+                                <td style="width: auto;">{{device.device_description}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            <div align="center">
+            <button type="submit" name="btnNew" class="btn btn-info">New device</button>
+            <button type="submit" name="btnEdit" class="btn btn-warning">Edit</button>
+<!--            <button type="submit" name="btnDelete" class="btn btn-danger" id="sub" onclick="Sub()">Delete</button>-->
+            </div>
+            </div>
+        </div>
+    </div>
+    </form>
+</body>

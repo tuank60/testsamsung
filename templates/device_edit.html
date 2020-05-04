@@ -1,0 +1,33 @@
+{% load static %}
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<head>
+    <title>Device register</title>
+</head>
+<body>
+    <h2 style="color:blue;">Create your new device here:</h2>
+    <div class="container sCantainerStyle">
+        <div class="row">
+            <form method="POST">
+                {% csrf_token %}
+                <table class="sTableStyle">
+                    <tr>
+                        <td><label class="sLabelStyle">Device Address: </label></td>
+                        <td><input type="text" value="{{data.device_address}}" name="device_address"/></td>
+                    </tr>
+                    <tr>
+                        <td><label class="sLabelStyle">Device name: </label></td>
+                        <td><input type="text" value="{{data.device_name}}" name="device_name"/></td>
+                    </tr>
+                    <tr>
+                        <td><label class="sLabelStyle">Description: </label></td>
+                        <td><input type="text" value="{{data.device_description}}" name="device_description"/></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><input type="submit" name="btnSubmit" class="btn btn-info" value="Submit"/></td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+</body>
