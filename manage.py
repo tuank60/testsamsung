@@ -10,6 +10,7 @@ import time
 import json
 from ble import models
 
+
 def main():
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'app.settings')
     try:
